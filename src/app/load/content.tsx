@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '@/lib/state/store';
-import { toggleSection, updateContent, saveConfiguration } from '@/lib/state/features/sectionsSlice';
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/lib/state/store";
+import {
+  toggleSection,
+  updateContent,
+  saveConfiguration,
+} from "@/lib/state/features/sectionsSlice";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Collapsible,
@@ -11,7 +15,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, Type, Search, Link } from "lucide-react";
+import { ChevronDown, ChevronUp, Type, Search, Link, File } from "lucide-react";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -22,13 +26,15 @@ import React from "react";
 export default function Content() {
   const dispatch = useDispatch<AppDispatch>();
   const sections = useSelector((state: RootState) => state.sections.sections);
-  const openSections = useSelector((state: RootState) => state.sections.openSections);
+  const openSections = useSelector(
+    (state: RootState) => state.sections.openSections,
+  );
   const [output, setOutput] = useState("");
 
   const sectionIcons = {
     Input: Type,
     Query: Search,
-    Bindings: Link
+    Bindings: Link,
   };
 
   const handleSectionToggle = (title: string) => {
@@ -51,7 +57,9 @@ export default function Content() {
   return (
     <ResizablePanelGroup direction="horizontal">
       <ResizablePanel>
-        {/* Left half - Collapsible sections */}
+        <div className="flex justify-end mt-4 px-4 py-2 border-b">
+          <Button onClick={handleSaveConfiguration}>Save Configuration</Button>
+        </div>
         {sections.map((section, index) => (
           <Collapsible
             key={section.title}
@@ -65,7 +73,10 @@ export default function Content() {
                 className={`flex w-full justify-between px-4 py-2 text-left rounded-none ${index !== 0 ? "border-t border-b" : ""}`}
               >
                 <div className="flex items-center space-x-2">
-                  {React.createElement(sectionIcons[section.title as keyof typeof sectionIcons], { className: "h-5 w-5" })}
+                  {React.createElement(
+                    sectionIcons[section.title as keyof typeof sectionIcons],
+                    { className: "h-5 w-5" },
+                  )}
                   <span className="font-semibold">{section.title}</span>
                 </div>
                 {openSections[section.title] ? (
@@ -89,13 +100,15 @@ export default function Content() {
             </CollapsibleContent>
           </Collapsible>
         ))}
-        <Button onClick={handleSaveConfiguration} className="mt-4">
-          Save Configuration
-        </Button>
       </ResizablePanel>
       <ResizableHandle />
       <ResizablePanel>
-        <h2 className="text-2xl font-bold px-4 py-2 border-b">Output</h2>
+        <div className="flex w-full justify-between px-4 py-2 text-left rounded-none border-b">
+          <div className="flex items-center space-x-2">
+            <File className="h-5 w-5" />
+            <span className="font-semibold">Output</span>
+          </div>
+        </div>
         <Textarea
           value={output}
           readOnly
