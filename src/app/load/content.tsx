@@ -21,6 +21,8 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+
+import jsonata from "jsonata";
 import React from "react";
 
 export default function Content() {
@@ -41,13 +43,52 @@ export default function Content() {
     dispatch(toggleSection(title));
   };
 
-  const handleContentChange = (title: string, newContent: string) => {
+  const processOutput = async (sectionsData: typeof sections) => {
+    const query = sectionsData.find(
+      (section) => section.title === "Query",
+    )?.content;
+    const bindings =
+      sectionsData.find((section) => section.title === "Bindings")?.content ||
+      "{}";
+    const input = sectionsData.find(
+      (section) => section.title === "Input",
+    )?.content;
+
+    if (!input || !query) {
+      return "Input and Query sections are required.";
+    }
+
+    let expression;
+    let data;
+    let bindingsObject;
+    try {
+      expression = jsonata(query);
+      data = JSON.parse(input);
+    } catch (error) {
+      return `Error in query: ${(error as Error).message}`;
+    }
+
+    try {
+      bindingsObject = eval(`(${bindings})`);
+    } catch (error) {
+      return `Error in bindings: ${(error as Error).message}`;
+    }
+
+    try {
+      const result = await expression.evaluate(data, bindingsObject);
+      return JSON.stringify(result, null, 2);
+    } catch (error) {
+      return `Error in query evaluation: ${(error as Error).message}`;
+    }
+  };
+
+  const handleContentChange = async (title: string, newContent: string) => {
     dispatch(updateContent({ title, content: newContent }));
-    setOutput(
-      sections
-        .map((section) => `${section.title}:\n${section.content}`)
-        .join("\n\n"),
+    const updatedSections = sections.map((section) =>
+      section.title === title ? { ...section, content: newContent } : section,
     );
+    const result = await processOutput(updatedSections);
+    setOutput(result);
   };
 
   const handleSaveConfiguration = () => {

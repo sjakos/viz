@@ -18,6 +18,7 @@
     "@reduxjs/toolkit": "^2.3.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "jsonata": "^2.0.5",
     "lucide-react": "^0.454.0",
     "next": "15.0.2",
     "react": "19.0.0-rc-02c0e824-20241028",
