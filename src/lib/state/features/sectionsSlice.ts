@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface Section {
   title: string;
   content: string;
+  language: string;
 }
 
 interface SectionsState {
@@ -12,9 +13,9 @@ interface SectionsState {
 
 const initialState: SectionsState = {
   sections: [
-    { title: 'Input', content: '' },
-    { title: 'Query', content: '' },
-    { title: 'Bindings', content: '' },
+    { title: 'Input', content: '{}', language: 'json' },
+    { title: 'Query', content: '$', language: 'jsonata' },
+    { title: 'Bindings', content: '{\n  //add your custom bindings here \n}', language: 'javascript' },
   ],
   openSections: {
     Input: true,

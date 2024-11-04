@@ -21,6 +21,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import Editor from "@monaco-editor/react";
 
 import jsonata from "jsonata";
 import React from "react";
@@ -82,10 +83,15 @@ export default function Content() {
     }
   };
 
-  const handleContentChange = async (title: string, newContent: string) => {
-    dispatch(updateContent({ title, content: newContent }));
+  const handleContentChange = async (
+    title: string,
+    newContent: string | undefined,
+  ) => {
+    dispatch(updateContent({ title, content: newContent || "" }));
     const updatedSections = sections.map((section) =>
-      section.title === title ? { ...section, content: newContent } : section,
+      section.title === title
+        ? { ...section, content: newContent || "" }
+        : section,
     );
     const result = await processOutput(updatedSections);
     setOutput(result);
@@ -129,13 +135,18 @@ export default function Content() {
             </CollapsibleTrigger>
             <CollapsibleContent className="border-t flex-grow overflow-auto">
               {openSections[section.title] && (
-                <Textarea
-                  value={section.content}
-                  onChange={(e) =>
-                    handleContentChange(section.title, e.target.value)
-                  }
-                  placeholder={`Enter ${section.title.toLowerCase()} here...`}
+                <Editor
                   className="w-full h-full min-h-[100px] rounded-none border-none resize-none"
+                  onChange={(e) => {
+                    handleContentChange(section.title, e);
+                  }}
+                  options={{
+                    minimap: {
+                      enabled: false,
+                    },
+                  }}
+                  defaultLanguage={section.language}
+                  defaultValue={section.content}
                 />
               )}
             </CollapsibleContent>
@@ -150,11 +161,18 @@ export default function Content() {
             <span className="font-semibold">Output</span>
           </div>
         </div>
-        <Textarea
-          value={output}
-          readOnly
+        <Editor
           className="flex-grow w-full h-full rounded-none border-none resize-none"
-          placeholder="The content from all sections will be displayed here."
+          options={{
+            domReadOnly: true,
+            readOnly: true,
+            minimap: {
+              enabled: false,
+            },
+          }}
+          height="90vh"
+          language="json"
+          value={output}
         />
       </ResizablePanel>
     </ResizablePanelGroup>
