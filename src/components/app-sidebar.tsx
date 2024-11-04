@@ -28,10 +28,6 @@ const navData: NavItem[] = [
       url: "/load",
     },
     {
-      title: "Transform & Query",
-      url: "/transform",
-    },
-    {
       title: "Visualize",
       url: "/visualize",
       items: [

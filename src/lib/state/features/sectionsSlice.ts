@@ -49,4 +49,5 @@ const sectionsSlice = createSlice({
 });
 
 export const { toggleSection, updateContent, saveConfiguration, setOutput } = sectionsSlice.actions;
+export const selectOutput = (state: { sections: SectionsState }) => state.sections.output;
 export default sectionsSlice.reducer;
