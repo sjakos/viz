@@ -1,14 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/lib/state/store";
 import {
   toggleSection,
   updateContent,
   saveConfiguration,
+  setOutput,
 } from "@/lib/state/features/sectionsSlice";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Collapsible,
   CollapsibleContent,
@@ -32,7 +31,6 @@ export default function Content() {
   const openSections = useSelector(
     (state: RootState) => state.sections.openSections,
   );
-  const [output, setOutput] = useState("");
 
   const sectionIcons = {
     Input: Type,
@@ -77,7 +75,9 @@ export default function Content() {
 
     try {
       const result = await expression.evaluate(data, bindingsObject);
-      return JSON.stringify(result, null, 2);
+      const output = JSON.stringify(result, null, 2);
+      dispatch(setOutput(output));
+      return output;
     } catch (error) {
       return `Error in query evaluation: ${(error as Error).message}`;
     }
@@ -93,8 +93,7 @@ export default function Content() {
         ? { ...section, content: newContent || "" }
         : section,
     );
-    const result = await processOutput(updatedSections);
-    setOutput(result);
+    await processOutput(updatedSections);
   };
 
   const handleSaveConfiguration = () => {
@@ -172,7 +171,7 @@ export default function Content() {
           }}
           height="90vh"
           language="json"
-          value={output}
+          value={useSelector((state: RootState) => state.sections.output)}
         />
       </ResizablePanel>
     </ResizablePanelGroup>

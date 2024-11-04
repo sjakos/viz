@@ -9,6 +9,7 @@ interface Section {
 interface SectionsState {
   sections: Section[];
   openSections: { [key: string]: boolean };
+  output: string;
 }
 
 const initialState: SectionsState = {
@@ -22,6 +23,7 @@ const initialState: SectionsState = {
     Query: true,
     Bindings: true,
   },
+  output: '',
 };
 
 const sectionsSlice = createSlice({
@@ -40,8 +42,11 @@ const sectionsSlice = createSlice({
     saveConfiguration: (state) => {
       localStorage.setItem('sectionsConfig', JSON.stringify(state.sections));
     },
+    setOutput: (state, action: PayloadAction<string>) => {
+      state.output = action.payload;
+    },
   },
 });
 
-export const { toggleSection, updateContent, saveConfiguration } = sectionsSlice.actions;
+export const { toggleSection, updateContent, saveConfiguration, setOutput } = sectionsSlice.actions;
 export default sectionsSlice.reducer;
