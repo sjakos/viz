@@ -33,7 +33,7 @@ export default function TableView() {
           </tr>
         </thead>
         <tbody>
-          {data.map((item: any, index: number) => (
+          {data.map((item: Record<string,string>, index: number) => (
             <tr key={index}>
               {headers.map((key) => (
                 <td key={key}>{String(item[key])}</td>
