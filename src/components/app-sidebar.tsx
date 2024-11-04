@@ -89,16 +89,16 @@ const NavItems = ({ items }: NavItemsProps) => (
     {items.map(({ title, url, items: subItems }) => (
       <SidebarMenuItem key={title}>
         <SidebarMenuButton asChild>
-          <a href={url} className="font-medium">
+          <Link href={url} className="font-medium">
             {title}
-          </a>
+          </Link>
         </SidebarMenuButton>
         {subItems?.length && (
           <SidebarMenuSub>
             {subItems.map(({ title: subTitle, url: subUrl, isActive }) => (
               <SidebarMenuSubItem key={subTitle}>
                 <SidebarMenuSubButton asChild isActive={isActive}>
-                  <a href={subUrl}>{subTitle}</a>
+                  <Link href={subUrl}>{subTitle}</Link>
                 </SidebarMenuSubButton>
               </SidebarMenuSubItem>
             ))}
