@@ -25,27 +25,27 @@ interface NavItem {
 const navData: NavItem[] = [
     {
       title: "Load",
-      url: "#",
+      url: "/load",
     },
     {
       title: "Transform & Query",
-      url: "#",
+      url: "/transform",
     },
     {
       title: "Visualize",
-      url: "#",
+      url: "/visualize",
       items: [
         {
           title: "Graph View",
-          url: "#",
+          url: "/visualize/graph",
         },
         {
           title: "Explorer View",
-          url: "#",
+          url: "/visualize/explorer",
         },
         {
           title: "Table View",
-          url: "#",
+          url: "/visualize/table",
         },
       ],
     },
@@ -58,7 +58,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <a href="/">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <GalleryVerticalEnd className="size-4" />
                 </div>
