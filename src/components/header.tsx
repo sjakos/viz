@@ -33,7 +33,7 @@ export default function Header({ breadcrumbs }: HeaderProps) {
                 {index < breadcrumbs.length - 1 ? (
                   <>
                     <BreadcrumbItem className="hidden md:block">
-                      <BreadcrumbLink>
+                      <BreadcrumbLink asChild>
                         <Link href={href}>{label}</Link>
                       </BreadcrumbLink>
                     </BreadcrumbItem>
