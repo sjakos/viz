@@ -45,7 +45,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { ComboBox } from "@/components/ui/combobox";
+import { ComboBox, ComboBoxItem } from "@/components/ui/combobox";
 
 import React from "react";
 
@@ -57,7 +57,7 @@ export default function Page() {
   const output = useSelector(selectOutput);
   const [newPresetName, setNewPresetName] = React.useState("");
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-  const [selectedPreset, setSelectedPreset] = React.useState<Status | null>(
+  const [selectedPreset, setSelectedPreset] = React.useState<ComboBoxItem | null>(
     null,
   );
 
@@ -99,7 +99,7 @@ export default function Page() {
     await dispatch(loadPresetAndProcess(presetId));
   };
 
-  const handlePresetSelect = (preset: Status | null) => {
+  const handlePresetSelect = (preset: ComboBoxItem | null) => {
     setSelectedPreset(preset);
     if (preset) {
       handleLoadPreset(preset.value);

@@ -16,7 +16,7 @@ import { XIcon } from "lucide-react"
 import React from "react";
 import { ElementType } from "react";
 
-interface ComboBoxItem {
+export interface ComboBoxItem {
   value: string;
   label: string;
 }
