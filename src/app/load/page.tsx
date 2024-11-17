@@ -7,7 +7,6 @@ import {
   toggleSection,
   updateContentAndProcess,
   savePreset,
-  deletePreset,
   loadPresetsFromStorage,
   selectPresets,
   selectOutput,
@@ -29,8 +28,8 @@ import {
   Search,
   Link,
   File,
-  Save,
-  Trash2,
+  BookmarkIcon,
+  SaveIcon,
 } from "lucide-react";
 import {
   ResizableHandle,
@@ -46,6 +45,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { ComboBox } from "@/components/ui/combobox";
 
 import React from "react";
 
@@ -57,6 +57,9 @@ export default function Page() {
   const output = useSelector(selectOutput);
   const [newPresetName, setNewPresetName] = React.useState("");
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [selectedPreset, setSelectedPreset] = React.useState<Status | null>(
+    null,
+  );
 
   useEffect(() => {
     dispatch(loadPresetsFromStorage());
@@ -82,6 +85,11 @@ export default function Page() {
   const handleSavePreset = () => {
     if (newPresetName.trim()) {
       dispatch(savePreset({ name: newPresetName }));
+      const newPreset = {
+        value: crypto.randomUUID(),
+        label: newPresetName,
+      };
+      setSelectedPreset(newPreset);
       setNewPresetName("");
       setIsDialogOpen(false);
     }
@@ -91,62 +99,61 @@ export default function Page() {
     await dispatch(loadPresetAndProcess(presetId));
   };
 
+  const handlePresetSelect = (preset: Status | null) => {
+    setSelectedPreset(preset);
+    if (preset) {
+      handleLoadPreset(preset.value);
+    }
+  };
+
   return (
     <ResizablePanelGroup direction="horizontal">
       <ResizablePanel>
-        <div className="flex justify-end mt-4 px-4 py-2 border-b">
-          <div className="flex gap-2">
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Save className="h-4 w-4 mr-2" />
-                  Save as Preset
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Save Preset</DialogTitle>
-                </DialogHeader>
-                <div className="flex flex-col gap-4">
-                  <Input
-                    placeholder="Preset name"
-                    value={newPresetName}
-                    onChange={(e) => setNewPresetName(e.target.value)}
-                  />
-                  <Button onClick={handleSavePreset}>Save</Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </div>
-
         <div className="border-b">
-          <div className="px-4 py-2">
-            <h3 className="font-semibold">Saved Presets</h3>
-          </div>
-          <div className="px-4 py-2 space-y-2">
-            {presets.map((preset) => (
-              <div
-                key={preset.id}
-                className="flex items-center justify-between"
-              >
-                <Button
-                  variant="ghost"
-                  className="flex-1 justify-start"
-                  onClick={() => handleLoadPreset(preset.id)}
-                >
-                  {preset.name}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => dispatch(deletePreset(preset.id))}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
+          <div className="w-full px-4 py-2 flex justify-between items-center rounded-none">
+            <h3 className="font-semibold">Transform & Filter</h3>
+            <div>
+              <ComboBox
+                Icon={BookmarkIcon}
+                placeholder="Load a preset"
+                searchPlaceholder="Search presets..."
+                emptyMessage="No presets found"
+                items={presets.map((preset) => ({
+                  value: preset.id,
+                  label: preset.name,
+                }))}
+                selectedItem={
+                  selectedPreset
+                    ? {
+                        value: selectedPreset.value,
+                        label: selectedPreset.label,
+                      }
+                    : null
+                }
+                onItemSelect={handlePresetSelect}
+              />
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <SaveIcon className="h-4 w-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Save Preset</DialogTitle>
+                  </DialogHeader>
+                  <div className="flex flex-col gap-4">
+                    <Input
+                      placeholder="Preset name"
+                      value={newPresetName}
+                      onChange={(e) => setNewPresetName(e.target.value)}
+                    />
+                    <Button onClick={handleSavePreset}>Save</Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+            </div>
         </div>
 
         {(Object.entries(sections) as [SectionType, Section][]).map(
