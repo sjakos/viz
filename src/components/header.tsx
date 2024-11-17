@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import Link from "next/link";
 import React from "react";
 
 interface BreadcrumbItem {
@@ -27,13 +28,13 @@ export default function Header({ breadcrumbs }: HeaderProps) {
         <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumb>
           <BreadcrumbList>
-            {breadcrumbs.map(({href,label}, index) => (
+            {breadcrumbs.map(({ href, label }, index) => (
               <React.Fragment key={index}>
                 {index < breadcrumbs.length - 1 ? (
                   <>
                     <BreadcrumbItem className="hidden md:block">
-                      <BreadcrumbLink href={href}>
-                        {label}
+                      <BreadcrumbLink>
+                        <Link href={href}>{label}</Link>
                       </BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator className="hidden md:block" />
